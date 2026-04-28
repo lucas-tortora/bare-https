@@ -58,7 +58,8 @@ test('basic', async (t) => {
       host: server.address().address,
       port: server.address().port,
       path: '/something/?key1=value1&key2=value2&enabled',
-      headers: { 'Content-Length': 12 }
+      headers: { 'Content-Length': 12 },
+      rejectUnauthorized: false
     },
     (req) => {
       req.write('body message')
