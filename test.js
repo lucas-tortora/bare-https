@@ -115,8 +115,10 @@ function request(opts, cb) {
     })
 
     client.on('close', () => {
-      if (result.response)
+      if (result.response) {
         result.response.chunks = result.response.chunks.map((c) => Buffer.from(c, 'hex'))
+      }
+
       resolve(result)
     })
 
