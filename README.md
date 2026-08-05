@@ -37,3 +37,160 @@ server.listen(0, () => {
 ## License
 
 Apache-2.0
+
+<!-- bare-refgen:api start -->
+
+## API
+
+### HTTPSAgent
+
+#### `createConnection(opts?: HTTPSSocketOptions): HTTPSSocket`
+
+Creates a new `HTTPSSocket` connection wrapping a plain TCP connection in TLS.
+
+**Parameters**
+
+| Parameter | Type                 | Default | Description                                                    |
+| --------- | -------------------- | ------- | -------------------------------------------------------------- |
+| `opts?`   | `HTTPSSocketOptions` | —       | Options for the underlying TCP connection and its TLS wrapper. |
+
+#### `HTTPSAgent.global: HTTPSAgent`
+
+The agent's own default instance (created with `keepAlive: 1000` and `timeout: 5000`), used as `bare-https`'s `globalAgent`.
+
+### HTTPSServer
+
+#### `HTTPSServer`
+
+```ts
+new HTTPSServer(opts?: HTTPSServerOptions, onrequest?: (req: HTTPIncomingMessage, res: HTTPServerResponse) => void)
+```
+
+An HTTPS server, reusing `bare-http1`'s request parsing and response handling over `HTTPSSocket` connections instead of plain `TCPSocket` connections.
+
+**Parameters**
+
+| Parameter    | Type                                                          | Default | Description                                                                                                 |
+| ------------ | ------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| `opts?`      | `HTTPSServerOptions`                                          | —       | Server options: TLS socket options (for example `cert`, `key`) plus `bare-http1` server connection options. |
+| `onrequest?` | `(req: HTTPIncomingMessage, res: HTTPServerResponse) => void` | —       | Added as a `'request'` listener.                                                                            |
+
+### HTTPSClientRequest
+
+#### `new HTTPSClientRequest(opts?: HTTPSClientRequestOptions, onresponse?: () => void)`
+
+An outgoing HTTPS request, extending `bare-http1`'s `HTTPClientRequest` but defaulting to an `HTTPSAgent` instead of an `HTTPAgent`.
+
+Overloads:
+
+```ts
+new HTTPSClientRequest(opts?: HTTPSClientRequestOptions, onresponse?: () => void)
+new HTTPSClientRequest(onresponse: () => void)
+```
+
+**Parameters**
+
+| Parameter     | Type                        | Default | Description                                                                                                                       |
+| ------------- | --------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `opts?`       | `HTTPSClientRequestOptions` | —       | `bare-http1` client request options; `agent` defaults to `HTTPSAgent.global`, or pass `agent: false` to use a fresh `HTTPSAgent`. |
+| `onresponse?` | `() => void`                | —       | Added as a one-time `'response'` listener.                                                                                        |
+
+### Functions
+
+#### `createServer`
+
+```ts
+createServer(opts?: HTTPSServerOptions, onrequest?: (req: HTTPIncomingMessage, res: HTTPServerResponse) => void): HTTPSServer
+```
+
+Creates an `HTTPSServer`. If `onrequest` is given, it's added as a `'request'` listener.
+
+**Parameters**
+
+| Parameter    | Type                                                          | Default | Description                                                                                                 |
+| ------------ | ------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| `opts?`      | `HTTPSServerOptions`                                          | —       | Server options: TLS socket options (for example `cert`, `key`) plus `bare-http1` server connection options. |
+| `onrequest?` | `(req: HTTPIncomingMessage, res: HTTPServerResponse) => void` | —       | Added as a `'request'` listener.                                                                            |
+
+#### `request`
+
+```ts
+request(url: URL | string, opts?: HTTPSClientRequestOptions, onresponse?: (res: HTTPIncomingMessage) => void): HTTPSClientRequest
+```
+
+Creates an `HTTPSClientRequest` to `url` (a `URL` or a URL string), using TLS. If `onresponse` is given, it's added as a one-time `'response'` listener. Does not send the request until it's ended.
+
+**Parameters**
+
+| Parameter     | Type                                 | Default | Description                                                                                                                 |
+| ------------- | ------------------------------------ | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `url`         | `URL \| string`                      | —       | The URL to request, as a `URL` object or a URL string.                                                                      |
+| `opts?`       | `HTTPSClientRequestOptions`          | —       | `bare-http1` client request options; `agent` defaults to `globalAgent`, or pass `agent: false` to use a fresh `HTTPSAgent`. |
+| `onresponse?` | `(res: HTTPIncomingMessage) => void` | —       | Added as a one-time `'response'` listener.                                                                                  |
+
+### Constants and variables
+
+#### `globalAgent: HTTPSAgent`
+
+The default `HTTPSAgent` used by `request()` when no `agent` option is given.
+
+### Types
+
+#### `HTTPSSocketEvents`
+
+```ts
+interface HTTPSSocketEvents {
+  connect: []
+  data: [data: unknown]
+  end: []
+  readable: []
+  piping: [dest: Writable]
+  close: []
+  error: [err: Error]
+  drain: []
+  finish: []
+  pipe: [src: Readable]
+  lookup: [err: Error | null, address: string | null, family: IPFamily | 0, host: string]
+  timeout: [ms: number]
+}
+```
+
+The events an `HTTPSSocket` emits: those of both `TLSSocket` and `TCPSocket`.
+
+#### `HTTPSSocketOptions`
+
+```ts
+interface HTTPSSocketOptions {
+  isServer?: boolean
+  cert?: ArrayBufferView
+  key?: ArrayBufferView
+  host?: string
+  rejectUnauthorized?: boolean
+  ca?: ArrayBufferView
+  alpnProtocols?: string[]
+  eagerOpen?: boolean
+  allowHalfOpen?: boolean
+  readBufferSize?: number
+  lookup?: DNSLookup
+  keepAlive?: boolean
+  keepAliveInitialDelay?: boolean
+  noDelay?: boolean
+  port?: number
+  timeout?: number
+  family?: `IPv${IPFamily}` | IPFamily | 0
+  hints?: number
+  all?: boolean
+}
+```
+
+Options for `HTTPSSocket`: those of `TLSSocket` combined with `TCPSocket`'s connection options.
+
+### Classes
+
+#### `HTTPSSocket`
+
+```ts
+class HTTPSSocket {}
+```
+
+<!-- bare-refgen:api end -->
