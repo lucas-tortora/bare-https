@@ -13,11 +13,16 @@ import { TCPSocket, TCPSocketOptions, TCPSocketConnectOptions, TCPSocketEvents }
 /** The events an `HTTPSSocket` emits: those of both `TLSSocket` and `TCPSocket`. */
 export interface HTTPSSocketEvents extends TLSSocketEvents, TCPSocketEvents {}
 
-/** Options for `HTTPSSocket`: those of `TLSSocket` combined with `TCPSocket`'s connection options. */
+/**
+ * Options for `HTTPSSocket`: those of `TLSSocket` combined with `TCPSocket`'s connection options.
+ */
 export interface HTTPSSocketOptions
   extends TLSSocketOptions, TCPSocketOptions, TCPSocketConnectOptions {}
 
-/** A `TCPSocket` wrapped in TLS, extending both `TLSSocket` and `TCPSocket`. Used as the transport for HTTPS requests and responses. */
+/**
+ * A `TCPSocket` wrapped in TLS, extending both `TLSSocket` and `TCPSocket`. Used as the transport
+ * for HTTPS requests and responses.
+ */
 interface HTTPSSocket<M extends HTTPSSocketEvents = HTTPSSocketEvents>
   extends TLSSocket<M>, TCPSocket<M> {}
 
@@ -25,7 +30,10 @@ declare class HTTPSSocket<M extends HTTPSSocketEvents = HTTPSSocketEvents> exten
 
 export { type HTTPSSocket }
 
-/** An `HTTPAgent` that creates `HTTPSSocket` connections over TLS instead of plain `TCPSocket` connections. Defaults `defaultPort` to `443`. */
+/**
+ * An `HTTPAgent` that creates `HTTPSSocket` connections over TLS instead of plain `TCPSocket`
+ * connections. Defaults `defaultPort` to `443`.
+ */
 interface HTTPSAgent extends HTTPAgent {
   /**
    * Creates a new `HTTPSSocket` connection wrapping a plain TCP connection in TLS.
@@ -37,7 +45,10 @@ interface HTTPSAgent extends HTTPAgent {
 declare class HTTPSAgent extends HTTPAgent {}
 
 declare namespace HTTPSAgent {
-  /** The agent's own default instance (created with `keepAlive: 1000` and `timeout: 5000`), used as `bare-https`'s `globalAgent`. */
+  /**
+   * The agent's own default instance (created with `keepAlive: 1000` and `timeout: 5000`), used as
+   * `bare-https`'s `globalAgent`.
+   */
   export const global: HTTPSAgent
 }
 
@@ -50,7 +61,8 @@ interface HTTPSServerOptions extends HTTPSSocketOptions, HTTPServerConnectionOpt
 
 declare class HTTPSServer extends HTTPServer {
   /**
-   * @param opts - Server options: TLS socket options (for example `cert`, `key`) plus `bare-http1` server connection options.
+   * @param opts - Server options: TLS socket options (for example `cert`, `key`) plus `bare-http1`
+   * server connection options.
    * @param onrequest - Added as a `'request'` listener.
    */
   constructor(
@@ -71,7 +83,8 @@ interface HTTPSClientRequest extends HTTPClientRequest {}
 
 declare class HTTPSClientRequest extends HTTPClientRequest {
   /**
-   * @param opts - `bare-http1` client request options; `agent` defaults to `HTTPSAgent.global`, or pass `agent: false` to use a fresh `HTTPSAgent`.
+   * @param opts - `bare-http1` client request options; `agent` defaults to `HTTPSAgent.global`, or
+   * pass `agent: false` to use a fresh `HTTPSAgent`.
    * @param onresponse - Added as a one-time `'response'` listener.
    */
   constructor(opts?: HTTPSClientRequestOptions, onresponse?: () => void)
@@ -83,7 +96,8 @@ export { type HTTPSClientRequest, HTTPSClientRequest as ClientRequest }
 
 /**
  * Creates an `HTTPSServer`. If `onrequest` is given, it's added as a `'request'` listener.
- * @param opts - Server options: TLS socket options (for example `cert`, `key`) plus `bare-http1` server connection options.
+ * @param opts - Server options: TLS socket options (for example `cert`, `key`) plus `bare-http1`
+ * server connection options.
  * @param onrequest - Added as a `'request'` listener.
  */
 export function createServer(
@@ -96,9 +110,12 @@ export function createServer(
 ): HTTPSServer
 
 /**
- * Creates an `HTTPSClientRequest` to `url` (a `URL` or a URL string), using TLS. If `onresponse` is given, it's added as a one-time `'response'` listener. Does not send the request until it's ended.
+ * Creates an `HTTPSClientRequest` to `url` (a `URL` or a URL string), using TLS. If `onresponse` is
+ * given, it's added as a one-time `'response'` listener. Does not send the request until it's
+ * ended.
  * @param url - The URL to request, as a `URL` object or a URL string.
- * @param opts - `bare-http1` client request options; `agent` defaults to `globalAgent`, or pass `agent: false` to use a fresh `HTTPSAgent`.
+ * @param opts - `bare-http1` client request options; `agent` defaults to `globalAgent`, or pass
+ * `agent: false` to use a fresh `HTTPSAgent`.
  * @param onresponse - Added as a one-time `'response'` listener.
  */
 export function request(
